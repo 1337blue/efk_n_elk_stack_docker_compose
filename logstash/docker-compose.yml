@@ -15,8 +15,6 @@ services:
     ports:
       - '9200:9200'
       - '9300:9300'
-    networks:
-      - elk
 
   logstash:
     image: xyz-logstash:latest
@@ -24,20 +22,13 @@ services:
       context: .
       dockerfile: ./Dockerfile
     user: root
-    # volumes:
-    #   - ./conf/:/usr/share/logstash/pipeline/
     working_dir: /usr/share/logstash/pipeline/
     environment:
       - ES_HOST=elasticsearch
       - LOGGING_INDEX=bar-logs-%{+YYYY.MM.dd}
-      #- HTTP_INPUT_PASSWORD=foo
-      #- HTTP_INPUT_USER=bar
     ports:
       - '8080:8080'
       - '12201:12201/udp'
-#    command: bash
-    networks:
-      - elk
     depends_on:
       - "elasticsearch"
 
@@ -50,11 +41,5 @@ services:
       options:
         gelf-address: udp://0.0.0.0:12201
         tag: kibana
-    networks:
-      - elk
     depends_on:
       - "logstash"
-
-networks:
-  elk:
-    driver: bridge
