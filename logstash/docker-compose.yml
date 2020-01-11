@@ -11,11 +11,11 @@ services:
       driver: "gelf"
       options:
         gelf-address: udp://0.0.0.0:12201
-        tag: elasticsearch 
+        tag: elasticsearch
     ports:
       - '9200:9200'
       - '9300:9300'
-    networks: 
+    networks:
       - elk
 
   logstash:
@@ -36,7 +36,7 @@ services:
       - '8080:8080'
       - '12201:12201/udp'
 #    command: bash
-    networks: 
+    networks:
       - elk
     depends_on:
       - "elasticsearch"
@@ -50,7 +50,7 @@ services:
       options:
         gelf-address: udp://0.0.0.0:12201
         tag: kibana
-    networks: 
+    networks:
       - elk
     depends_on:
       - "logstash"
