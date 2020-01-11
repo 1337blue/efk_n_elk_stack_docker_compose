@@ -4,14 +4,39 @@ version: '2.2'
 
 services:
 
+  elasticsearch:
+    image: elasticsearch:7.4.0
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: 0.0.0.0:24224
+        tag: elasticsearch
+    depends_on:
+      - "fluent-bit"
+
   fluent-bit:
-    image: xyz-fluent-bit:${CT_TAG}
+    image: xyz-fluent-bit:latest
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile
     environment:
-      - ES_HOST=https://foo
-      - HTTP_INPUT_PASSWORD=foo
-      - HTTP_INPUT_USER=bar
+      - ES_HOST=elasticsearch
     ports:
       - '24224:24224'
+
+  kibana:
+    image: kibana:7.4.0
+    ports:
+      - '5601:5601'
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: 0.0.0.0:24224
+        tag: kibana
+    depends_on:
+      - "fluent-bit"
