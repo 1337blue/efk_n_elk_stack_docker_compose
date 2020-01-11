@@ -25,7 +25,7 @@ services:
     working_dir: /usr/share/logstash/pipeline/
     environment:
       - ES_HOST=elasticsearch
-      - LOGGING_INDEX=bar-logs-%{+YYYY.MM.dd}
+      - LOGGING_INDEX=logstash-%{+YYYY.MM.dd}
     ports:
       - '8080:8080'
       - '12201:12201/udp'
